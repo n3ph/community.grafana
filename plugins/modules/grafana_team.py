@@ -44,7 +44,7 @@ options:
     type: str
   members:
     description:
-      - List of team members (emails).
+      - List of team members (login).
       - The list can be enforced with C(enforce_members) parameter.
     type: list
     elements: str
@@ -106,8 +106,8 @@ EXAMPLES = """
       name: "grafana_working_group"
       email: "foo.bar@example.com"
       members:
-          - john.doe@example.com
-          - jane.doe@example.com
+          - john.doe
+          - jane.doe
       state: present
 
 - name: Create a team with members and enforce the list of members
@@ -117,8 +117,8 @@ EXAMPLES = """
       name: "grafana_working_group"
       email: "foo.bar@example.com"
       members:
-          - john.doe@example.com
-          - jane.doe@example.com
+          - john.doe
+          - jane.doe
       enforce_members: true
       state: present
 
@@ -173,7 +173,7 @@ team:
             returned: always
             type: list
             sample:
-                - ["john.doe@exemple.com"]
+                - ["john.doe"]
         orgId:
             description: The organization id that the team is part of.
             returned: always
@@ -334,7 +334,7 @@ class GrafanaTeamInterface(object):
     def get_team_members(self, team_id):
         url = "/api/teams/{team_id}/members".format(team_id=team_id)
         response = self._send_request(url, headers=self.headers, method="GET")
-        members = [item.get("email") for item in response]
+        members = [item.get("login") for item in response]
         return members
 
     def add_team_member(self, team_id, email):
